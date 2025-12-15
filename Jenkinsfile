@@ -2,16 +2,25 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'
-        jdk 'Java'
+        maven 'maven3'
+        jdk 'jdk'
     }
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Verify Tools') {
+            steps {
+                sh '''
+                java -version
+                mvn -version
+                '''
+            }
+        }
+
+        stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/your-username/employee-management.git'
+                    url: 'https://github.com/kalladavid/-Employee-Management-System-CI-CD-with-Jenkins.git'
             }
         }
 
@@ -32,21 +41,5 @@ pipeline {
                 sh 'mvn package'
             }
         }
-
-        stage('Archive Artifacts') {
-            steps {
-                archiveArtifacts artifacts: 'target/*.jar'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build Successful ✅'
-        }
-        failure {
-            echo 'Build Failed ❌'
-        }
     }
 }
-
